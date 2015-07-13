@@ -1,5 +1,6 @@
 # Main Objectives
-1. Fix all compile errors.
+1. Make your own git branch with your name in camal case.
+2. Fix all compile errors.
 2. Allow 4-directional movement.
 3. Add proper game over/menu loop.
 4. Add two power-ups of your choice (new weapon, faster movement, sheild, something else you think is cool).
