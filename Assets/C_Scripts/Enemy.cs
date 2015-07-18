@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NewBehaviourScript1 : MonoBehaviour {
+public class Enemy : MonoBehaviour {
+
+	private float randomOffset;
 
 	// Use this for initialization
 	void Start () {
@@ -12,13 +14,16 @@ public class NewBehaviourScript1 : MonoBehaviour {
 	void Update () {
 
         GetComponent<Transform>().position -= GetComponent<Transform>().right * 3 * Time.deltaTime;
-        GetComponent<Transform>().position += Mathf.Sign(Time.time + randomOffset) * Vector3.down * Time.deltaTime;
+        GetComponent<Transform>().position += Mathf.Sin(Time.time + randomOffset) * Vector3.down * Time.deltaTime;
 
+		if (GetComponent<Transform> ().position.x < -15) {
+			Destroy (gameObject);
+		}
 	}
 
     void OnTriggerEnter(Collider collider)
     {
-        if (collider.tag == "Bullet!")
+        if (collider.tag == "Bullet")
         {
             Destroy(gameObject);
         }

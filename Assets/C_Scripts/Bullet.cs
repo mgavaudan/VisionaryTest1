@@ -1,18 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NewBehaviourScript : MonoBehaviour {
+public class Bullet : MonoBehaviour {
 
-	// Use this for initialization
+
 	void Start () {
         GetComponent<Transform>().eulerAngles = new Vector3(GetComponent<Transform>().eulerAngles.z, GetComponent<Transform>().eulerAngles.y, Random.Range(-45, 45));
 	
 	}
 	
-	// Update is called once per frame
+
 	void Update () {
 
-        GetComponent<Transform>().position -= GetComponent<Transform>().right * 10 * Time.fixedDeltaTime; // here
+        GetComponent<Transform>().position -= GetComponent<Transform>().right * 10 * Time.fixedDeltaTime;
+		if (GetComponent<Transform> ().position.x > 15) {
+			Destroy (gameObject);
+		}
+
 	}
 
     void OnTriggerEnter (Collider collider)
@@ -21,5 +25,6 @@ public class NewBehaviourScript : MonoBehaviour {
         {
             Destroy(gameObject);
         }
+
     }
 }
