@@ -5,15 +5,37 @@ public class Shooter : MonoBehaviour
 {
     public GameObject prefa;
 	public GameObject camera;
-    private float timer = 0;
-	private int energy = 3;
-	private int speed =2;
-	private float fireRate = 0.3f;
+    private float timer;
+	private int energy;
+	private int speed;
+	private float fireRate;
+
+	void Awake(){
+
+		timer = 0;
+		energy = 3;
+		speed = 2;
+		fireRate = 0.3f;
+	
+		// Null checks
+		if (!camera) {
+			GameObject.Find("Main Camera");
+		}
+		if (!prefa) {
+			GameObject.Find("Capsule");
+		}
+
+	}
 
 	void Update ()
 	{
+		// checking if the player is shooting
 		Shoot ();
-		GetInput ();
+		// checking if player is moving
+		GetMove ();
+		// checking if player activated ability
+		Ability ();
+
 	}
 
 	void Shoot(){
@@ -29,7 +51,7 @@ public class Shooter : MonoBehaviour
 		timer += Time.fixedDeltaTime;
 	}
 
-	void GetInput(){
+	void GetMove(){
 
 		if (Input.GetButton ("Up")) {
 			GetComponent<Transform> ().position += new Vector3 (0, speed * Time.deltaTime, 0);
@@ -47,14 +69,18 @@ public class Shooter : MonoBehaviour
 			GetComponent<Transform> ().position += new Vector3 (-speed * Time.deltaTime, 0, 0);
 		} 
 
+	}
+
+	void Ability(){
+
 		if (Input.GetKeyUp ("1")&& energy>0) {
 			StartCoroutine( ShootBurst() );
 		}
-
+		
 		if (Input.GetKeyUp ("2") && energy>0) {
 			// quadruple speed for 5 seconds
 			StartCoroutine( SpeedBurst() );
-
+			
 		}
 		if (Input.GetKeyUp ("3") && energy > 2) {
 			// ultimate ability
@@ -68,6 +94,7 @@ public class Shooter : MonoBehaviour
 		if (Input.GetKeyUp ("r")) {  
 			Application.LoadLevel (0);  
 		} 
+
 	}
 
 
@@ -89,8 +116,7 @@ public class Shooter : MonoBehaviour
     {
         if (collider.tag == "Enemy")
         {
-			camera.GetComponent<Guimaster>().flag = 2;
-			Destroy(gameObject); 
+			camera.GetComponent<EffectsMaster>().flag = 2;
         }
     }
 
