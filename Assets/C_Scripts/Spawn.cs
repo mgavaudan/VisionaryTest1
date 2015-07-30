@@ -4,42 +4,39 @@ using System.Collections;
 public class Spawn : MonoBehaviour {
 
     public GameObject enemy;
-	public GameObject camera;
-	private float timer;
-
-
+	public GameObject cam;
+	
 	void Awake(){
 		
 		// Null checks
-		if (!camera) {
-			GameObject.Find("Main Camera");
+		if (!cam) {
+			cam = GameObject.Find("Main cam");
 		}
 		if (!enemy) {
-			GameObject.Find("Capsule (1)");
+			enemy = GameObject.Find("Enemy");
 		}
-		
+	}
+
+	void Start(){
+		// creating the enemy missiles
+		StartCoroutine(SpawnEnemies ());
 	}
 	
 	void Update () {
-
 		// making the enemy ship move up and down
-		GetComponent<Transform>().position += Mathf.Sin(Time.time) * Vector3.down * Time.deltaTime;
-		// creating the little creatures
-		SpawnEnemies ();
+		GetComponent<Rigidbody>().position += Mathf.Sin(Time.time) * Vector3.down * Time.deltaTime*15;
 	}
 
-	void SpawnEnemies(){
+	IEnumerator SpawnEnemies(){
 
-		if (timer > 1) {
-			timer = 0;
+		while(true){
 			// spawn between 4 and 30 enemies every second
-			int numEnemies = Random.Range (4, 30);
+			int numEnemies = Random.Range (4, 10);
 			for (int i = 0; i < numEnemies; ++i) {
-				GameObject spawned = GameObject.Instantiate (enemy);
-				spawned.GetComponent<Transform> ().position = GetComponent<Transform> ().position + Vector3.down * Random.Range (-5, 15) + Vector3.left * Random.Range (-2, 2);
+				Instantiate(enemy, GetComponent<Rigidbody>().position + Vector3.down * Random.Range (-5, 15) + Vector3.left * Random.Range (-2, 2), Quaternion.identity );
 			}
+			yield return new WaitForSeconds(0.5f);
 		}
-		timer += Time.fixedDeltaTime;
 	}
 		
 		
@@ -49,7 +46,7 @@ public class Spawn : MonoBehaviour {
         if (collider.tag == "Bullet")
         {
 			// if a bullet hits we display the win gui and destroy this ship
-			camera.GetComponent<EffectsMaster>().flag = 1;
+			cam.GetComponent<EffectsMaster>().Flag = 1;
         }
 
     }	

@@ -3,7 +3,14 @@ using System.Collections;
 
 public class EffectsMaster : MonoBehaviour {
 
-	public int flag;
+	private int flag;
+
+	public int Flag {
+		set{
+			flag = value;
+		}
+	}
+
 	public GameObject player;
 	public GameObject spawn;
 
@@ -13,15 +20,19 @@ public class EffectsMaster : MonoBehaviour {
 	
 	}
 
-	void Update(){
-
+	void Start(){
+	
 		// Null checks
 		if (!player) {
-			GameObject.Find("Main Camera");
+			player = GameObject.Find("Player");
 		}
 		if (!spawn) {
-			GameObject.Find("Capsule");
+			spawn = GameObject.Find("Spawn");
 		}
+	
+	}
+
+	void Update(){
 
 		//restart
 		if (Input.GetKeyUp ("r")) {  
@@ -32,7 +43,7 @@ public class EffectsMaster : MonoBehaviour {
 			Application.Quit ();
 		}
 
-		ExplosionMaster ();
+		 ExplosionMaster ();
 	
 	}
 
@@ -42,7 +53,7 @@ public class EffectsMaster : MonoBehaviour {
 			ParticleSystem exp = spawn.GetComponent<ParticleSystem>();
 			exp.Play();
 			Destroy(spawn, exp.duration);
-			Destroy(player);
+			Destroy(player, exp.duration);
 			flag=3;
 
 		} 
@@ -58,7 +69,7 @@ public class EffectsMaster : MonoBehaviour {
 	void OnGUI(){
 
 		GUIStyle myStyle = new GUIStyle();
-		myStyle.fontSize = 20;
+		myStyle.fontSize = Screen.height/20;
 		myStyle.normal.textColor= Color.white;
 		if (flag==3) {
 			GUI.Label( new Rect(Screen.width/3.5f, Screen.height/2, Screen.width, Screen.height), "You win! Press R to restart or Q to quit!", myStyle);
