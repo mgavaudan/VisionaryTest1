@@ -6,21 +6,25 @@ public class Shooter : MonoBehaviour
     public GameObject bullet;
 	public GameObject cam;
 
-    private float timer;
-	private int energy;
-	private int speed;
-	private Vector3 velocity;
-	private float fireRate;
+	[Range(0, 30)]
+	public int energy;
+
+	[Range(0.0f, 30.0f)]
+	public float speed;
+
+	[Range(0.0f, 1.0f)]
+	public float fireRate;
+
+	private float timer;
 	private Rigidbody rigid;
 
 	void Awake(){
 
 		rigid = GetComponent<Rigidbody> ();
-
-		timer = 0;
-		speed = 10;
-		energy = 3;
+		timer = 0f;
+		speed = 10f;
 		fireRate = 0.3f;
+		energy = 3;
 
 	}
 
@@ -48,7 +52,7 @@ public class Shooter : MonoBehaviour
 
 	void FixedUpdate() {
 		// player movement
-		velocity = new Vector3 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw ("Vertical"), 0).normalized * speed;
+		Vector3 velocity = new Vector3 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw ("Vertical"), 0).normalized * speed;
 		rigid.MovePosition (rigid.position + velocity * Time.fixedDeltaTime);
 	}
 
@@ -72,17 +76,11 @@ public class Shooter : MonoBehaviour
 		}
 		else if (Input.GetKeyUp ("2") && energy>0) {
 			// quadruple speed for 5 seconds
-			StartCoroutine( SpeedBurst() );
-			
+			StartCoroutine( SpeedBurst() );	
 		}
 		else if (Input.GetKeyUp ("3") && energy > 2) {
-			// ultimate ability
-			GameObject[] army = GameObject.FindGameObjectsWithTag ("Enemy");
-			
-			for(var i = 0 ; i < army.Length ; i ++)
-			{
-				Destroy(army[i]);
-			}
+			// destroy all enemies
+			StartCoroutine(Nuke());
 		}
 
 		// restart the level
@@ -92,19 +90,32 @@ public class Shooter : MonoBehaviour
 
 	}
 
+	IEnumerator Nuke(){
+	
+		// ultimate ability
+		GameObject[] army = GameObject.FindGameObjectsWithTag ("Enemy");
+		for(var i = 0 ; i < army.Length ; i ++)
+		{
+			Destroy(army[i]);
+		}
+		energy-=3;
+
+		yield return new WaitForSeconds(1);
+	}
 
 	IEnumerator SpeedBurst () {
-		speed=8;
+
+		speed*=2;
 		energy-=1;
 		yield return new WaitForSeconds(5);
-		speed =2;
+		speed /=2;
 	}
 
 	IEnumerator ShootBurst () {
-		fireRate = 0.08f;
+		fireRate /= 3;
 		energy-=1;
 		yield return new WaitForSeconds(5);
-		fireRate = 0.3f;
+		fireRate *= 3;
 	}
 
     void OnTriggerEnter (Collider collider)

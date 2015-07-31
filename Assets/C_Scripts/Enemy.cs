@@ -4,15 +4,20 @@ using System.Collections;
 public class Enemy : MonoBehaviour {
 
 	private float randomOffset;
+	private Rigidbody rigid;
+
+	[Range(0.0f, 30.0f)]
+	public float speed = 15f;
 	
 	void Start () {
-		GetComponent<Rigidbody>().velocity = GetComponent<Transform>().right * -15;
+		rigid = GetComponent<Rigidbody> ();
+		rigid.velocity = GetComponent<Transform>().right * -speed;
         randomOffset = Random.Range(0f, 1f);
 	}
 
 	void Update () {
 		// move the enemy missiles
-        GetComponent<Rigidbody>().position += Mathf.Sin(Time.time + randomOffset) * Vector3.down * Time.deltaTime;
+        rigid.position += Mathf.Sin(Time.time + randomOffset) * Vector3.down * Time.deltaTime;
 	}
 
     void OnTriggerEnter(Collider collider)
