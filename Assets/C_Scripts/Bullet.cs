@@ -7,6 +7,8 @@ public class Bullet : MonoBehaviour {
 	public int bulletSpeed;
 
 	void Awake () {
+
+		GetComponent<AudioSource>().Play();
 		// Null checks
 		if (!explosion) {
 			explosion = GameObject.Find("Explosion");

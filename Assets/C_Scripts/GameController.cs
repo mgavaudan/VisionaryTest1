@@ -34,14 +34,15 @@ public class GameController : MonoBehaviour {
 
 		//restart
 		if (Input.GetKeyUp ("r")) {  
-			Application.LoadLevel (0);  
+			Application.LoadLevel (0); 
+			Spawn.playing=true;
 		} 
 		// quit
 		if (Input.GetKeyUp ("q")) { 
 			Application.Quit ();
 		}
 
-		 ExplosionMaster ();
+		ExplosionMaster ();
 	
 	}
 
@@ -61,6 +62,12 @@ public class GameController : MonoBehaviour {
 			Destroy(player, exp.duration);
 			flag = 4;
 		} 
+
+		if (flag == 5) {
+		
+			GetComponent<AudioSource>().Play();
+			flag=0;
+		}
 
 	}
 

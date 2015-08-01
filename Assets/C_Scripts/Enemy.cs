@@ -37,11 +37,13 @@ public class Enemy : MonoBehaviour {
     void OnTriggerEnter(Collider collider)
     {
 		if (collider.tag == "Bullet") {
+			GameController.Flag=5;
 			Instantiate (explosion, collider.transform.position, collider.transform.rotation);
 			Destroy (gameObject);
 		} 
 
 		else if (collider.tag == "Boundary") {
+			GameController.Flag=5;
 			Instantiate (explosion, transform.position, transform.rotation);
 			Destroy (gameObject);
 

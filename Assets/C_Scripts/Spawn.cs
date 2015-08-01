@@ -28,7 +28,7 @@ public class Spawn : MonoBehaviour {
 		rigid = GetComponent<Rigidbody> ();
 
 		if (!cam) {
-			cam = GameObject.Find("Main cam");
+			cam = GameObject.Find("Main Camera");
 		}
 		if (!enemy) {
 			enemy = GameObject.Find("Enemy");
@@ -64,6 +64,7 @@ public class Spawn : MonoBehaviour {
     {
         if (collider.tag == "Bullet") {
 			// if a bullet hits we display the win gui and destroy this ship
+			GetComponent<AudioSource>().Play();
 			GameController.Flag = 1;
 		} 
     }	

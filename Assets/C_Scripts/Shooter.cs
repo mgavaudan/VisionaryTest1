@@ -37,7 +37,7 @@ public class Shooter : MonoBehaviour
 	
 		// Null checks
 		if (!cam) {
-			cam = GameObject.Find("Main cam");
+			cam = GameObject.Find("Main Camera");
 		}
 		if (!bullet) {
 			bullet = GameObject.Find("Bullet");
@@ -140,7 +140,7 @@ public class Shooter : MonoBehaviour
 			Spawn.playing=false;
 			energy+=3;
 			StartCoroutine(Nuke());
-
+			GetComponent<AudioSource>().Play();
 			GameController.Flag = 2;
         }
     }
