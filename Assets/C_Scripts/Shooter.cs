@@ -17,14 +17,19 @@ public class Shooter : MonoBehaviour
 
 	private float timer;
 	private Rigidbody rigid;
+		
+	private static Vector3 pos;
+	
+	public static Vector3 Pos {
+		get{
+			return pos;
+		}
+	}
 
 	void Awake(){
 
 		rigid = GetComponent<Rigidbody> ();
 		timer = 0f;
-		speed = 10f;
-		fireRate = 0.3f;
-		energy = 3;
 
 	}
 
@@ -50,10 +55,13 @@ public class Shooter : MonoBehaviour
 
 	}
 
+	#region Input Controller
+
 	void FixedUpdate() {
 		// player movement
 		Vector3 velocity = new Vector3 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw ("Vertical"), 0).normalized * speed;
 		rigid.MovePosition (rigid.position + velocity * Time.fixedDeltaTime);
+		pos = rigid.position;
 	}
 
 
@@ -61,12 +69,13 @@ public class Shooter : MonoBehaviour
 	void Shoot(){
 
 		if (timer > fireRate && Input.GetButton("Fire1")) { 
-			Instantiate(bullet, GetComponent<Transform>().position, Quaternion.AngleAxis(180, Vector3.left) );
+			Instantiate(bullet, rigid.position, Quaternion.AngleAxis(180, Vector3.left) );
 			timer = 0;
 		}
 		
 		timer += Time.fixedDeltaTime;
 	}
+
 
 
 	void Ability(){
@@ -89,6 +98,10 @@ public class Shooter : MonoBehaviour
 		} 
 
 	}
+
+	#endregion
+
+	#region Abilities
 
 	IEnumerator Nuke(){
 	
@@ -118,21 +131,26 @@ public class Shooter : MonoBehaviour
 		fireRate *= 3;
 	}
 
+	#endregion
+
     void OnTriggerEnter (Collider collider)
     {
         if (collider.tag == "Enemy")
         {
-			cam.GetComponent<EffectsMaster>().Flag = 2;
+			Spawn.playing=false;
+			energy+=3;
+			StartCoroutine(Nuke());
+
+			GameController.Flag = 2;
         }
     }
+	
 
 	void OnGUI(){
-
+		
 		GUI.Label( new Rect(5, Screen.height-25, Screen.width, Screen.height), "Energy Left:" + energy);
 		GUI.Label( new Rect(205, Screen.height-25, Screen.width, Screen.height),  "Press: 1 for faster fireRate, 2 for speed burst and 3 to nuke");
-
 	}
-
 }
 
 

@@ -6,9 +6,27 @@ public class Spawn : MonoBehaviour {
     public GameObject enemy;
 	public GameObject cam;
 	
+	private Rigidbody rigid;
+
+	// how far is the ship going?
+	public float moveLen;
+
+	// max and min number of spawns per half second
+	public int numSpawnMax;
+	public int numSpawnMin;
+
+	// range of spawn area around craft
+	public int spawnArea;
+
+	public static bool playing = true;
+
+	[Range(0.0f, 1.0f)]
+	public float spawnRate;
+
 	void Awake(){
-		
-		// Null checks
+
+		rigid = GetComponent<Rigidbody> ();
+
 		if (!cam) {
 			cam = GameObject.Find("Main cam");
 		}
@@ -23,19 +41,20 @@ public class Spawn : MonoBehaviour {
 	}
 	
 	void Update () {
-		// making the enemy ship move up and down
-		GetComponent<Rigidbody>().position += Mathf.Sin(Time.time) * Vector3.down * Time.deltaTime*15;
+
+		Vector3 velocity = new Vector3 ( 0.0f, Shooter.Pos.y, 0).normalized * 10;
+		rigid.MovePosition (rigid.position + velocity * Time.fixedDeltaTime);
+
 	}
-
+	
 	IEnumerator SpawnEnemies(){
-
-		while(true){
-			// spawn between 4 and 30 enemies every second
-			int numEnemies = Random.Range (4, 10);
+		
+		while(playing){
+			int numEnemies = Random.Range (numSpawnMin, numSpawnMax);
 			for (int i = 0; i < numEnemies; ++i) {
-				Instantiate(enemy, GetComponent<Rigidbody>().position + Vector3.down * Random.Range (-5, 15) + Vector3.left * Random.Range (-2, 2), Quaternion.identity );
+				Instantiate(enemy, rigid.position + Vector3.down * Random.Range (-spawnArea, spawnArea) + Vector3.left * Random.Range (-2, 2), Quaternion.identity );
 			}
-			yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(spawnRate);
 		}
 	}
 		
@@ -43,12 +62,10 @@ public class Spawn : MonoBehaviour {
 
     void OnTriggerEnter (Collider collider)
     {
-        if (collider.tag == "Bullet")
-        {
+        if (collider.tag == "Bullet") {
 			// if a bullet hits we display the win gui and destroy this ship
-			cam.GetComponent<EffectsMaster>().Flag = 1;
-        }
-
+			GameController.Flag = 1;
+		} 
     }	
 	
 }

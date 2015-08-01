@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EffectsMaster : MonoBehaviour {
+public class GameController : MonoBehaviour {
 
-	private int flag;
+	private static int flag;
 
-	public int Flag {
+	public static int Flag {
 		set{
 			flag = value;
 		}
@@ -15,9 +15,7 @@ public class EffectsMaster : MonoBehaviour {
 	public GameObject spawn;
 
 	void Awake(){
-	
 		flag = 0;
-	
 	}
 
 	void Start(){

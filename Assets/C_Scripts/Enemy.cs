@@ -3,28 +3,48 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour {
 
-	private float randomOffset;
-	private Rigidbody rigid;
+	public GameObject explosion;
+	public float maxRadiansDelta;
 
 	[Range(0.0f, 30.0f)]
-	public float speed = 15f;
+	public float speed;
 	
-	void Start () {
-		rigid = GetComponent<Rigidbody> ();
-		rigid.velocity = GetComponent<Transform>().right * -speed;
-        randomOffset = Random.Range(0f, 1f);
+	void Awake () {
+
+		// Null checks
+		if (!explosion) {
+			explosion = GameObject.Find("Explosion");
+		}
+		StartCoroutine (Homing());
 	}
 
-	void Update () {
-		// move the enemy missiles
-        rigid.position += Mathf.Sin(Time.time + randomOffset) * Vector3.down * Time.deltaTime;
+
+	IEnumerator Homing()
+	{
+		while(true)
+		{
+			transform.position += transform.forward * speed * Time.deltaTime;
+
+			if (transform.position.x>Shooter.Pos.x){
+				transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(transform.forward, (Shooter.Pos - transform.position).normalized, maxRadiansDelta, 1f));
+			}
+
+
+			yield return null;
+		}
 	}
 
     void OnTriggerEnter(Collider collider)
     {
-		if (collider.tag == "Bullet" || collider.tag== "Boundary")
-        {
-            Destroy(gameObject);
-        }
+		if (collider.tag == "Bullet") {
+			Instantiate (explosion, collider.transform.position, collider.transform.rotation);
+			Destroy (gameObject);
+		} 
+
+		else if (collider.tag == "Boundary") {
+			Instantiate (explosion, transform.position, transform.rotation);
+			Destroy (gameObject);
+
+		}
     }
 }
