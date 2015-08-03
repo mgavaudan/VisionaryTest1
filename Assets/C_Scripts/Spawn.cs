@@ -42,9 +42,17 @@ public class Spawn : MonoBehaviour {
 	
 	void Update () {
 
-		Vector3 velocity = new Vector3 ( 0.0f, Shooter.Pos.y, 0).normalized * 10;
-		rigid.MovePosition (rigid.position + velocity * Time.fixedDeltaTime);
+		Vector3 velocity;
 
+		if (-15.0f < rigid.position.y && rigid.position.y < 15.0f) {
+			velocity = new Vector3 (0.0f, Shooter.Pos.y, 0).normalized * 10;
+		}
+		else {
+			// small hack to get ship moving after it reaches its limit
+			velocity = new Vector3 (0.0f, Mathf.Sin(Time.time), 0).normalized * 10;
+		}
+
+		rigid.MovePosition (rigid.position + velocity * Time.fixedDeltaTime);
 	}
 	
 	IEnumerator SpawnEnemies(){
